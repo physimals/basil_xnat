@@ -1,25 +1,5 @@
 # Dockerfile to install FSL based on https://github.com/brainlife/docker-fsl
-FROM ubuntu:20.04
+FROM brainlife/fsl:6.0.4
 
-#https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation/Linux
-
-RUN apt update && apt install -y wget python
-
-#install fsl, but get rid of src 
-RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py && python fslinstaller.py -d /usr/local/fsl -V 6.0.5 && rm -rf /usr/local/fsl/src
-
-ENV FSLDIR=/usr/local/fsl
-ENV PATH=$PATH:$FSLDIR/bin
-ENV LD_LIBRARY_PATH=$FSLDIR/lib
-ENV FSLOUTPUTTYPE=NIFTI_GZ
-
-#fsl needs numpy
-RUN apt install -y vim jq python-numpy
-
-#RUN ls /usr/local/fsl/lib
-#RUN ldd /usr/local/fsl/bin/eddy_cuda9.1
-#RUN du -sh /usr/local/fsl/fslpython
-
-#https://wiki.ubuntu.com/DashAsBinSh
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+LABEL org.nrg.commands="[{\"name\": \"fsl_deface\", \"command-line\": \"fsl_deface /input /output\", \"image\": \"spmic/fsl\", \"label\": \"fsl_deface\", \"version\": \"1.0\", \"schema-version\": \"1.0\", \"info-url\": \"\", \"type\": \"docker\", \"description\": \"Runs fsl_deface on a structural image\", \"inputs\": [], \"outputs\": [{\"mount\": \"defaced-out\", \"required\": \"true\", \"name\": \"defaced\", \"description\": \"Defaced output\"}], \"mounts\": [{\"writable\": \"false\", \"path\": \"/input\", \"name\": \"nifti-in\"}, {\"writable\": \"true\", \"path\": \"/output\", \"name\": \"defaced-out\"}], \"xnat\": [{\"derived-inputs\": [{\"name\": \"scan-niftis\", \"matcher\": \"@.label == 'NIFTI'\", \"provides-files-for-command-mount\": \"nifti-in\", \"derived-from-wrapper-input\": \"scan\", \"type\": \"Resource\", \"description\": \"The nifti resource on the scan\"}], \"contexts\": [\"xnat:imageScanData\"], \"description\": \"Run fsl_deface on a T1 weighted scan\", \"label\": \"fsl_deface\", \"output-handlers\": [{\"accepts-command-output\": \"defaced\", \"label\": \"DEFACED\", \"type\": \"Resource\", \"name\": \"defaced-resource\", \"as-a-child-of-wrapper-input\": \"scan\"}], \"external-inputs\": [{\"matcher\": \"'NIFTI' in @.resources[*].label\", \"required\": true, \"type\": \"Scan\", \"name\": \"scan\", \"description\": \"Input scan\"}], \"name\": \"fsl_deface-scan\"}]}]"
 
