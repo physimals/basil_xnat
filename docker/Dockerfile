@@ -1,5 +1,8 @@
 # Dockerfile to install FSL based on https://github.com/brainlife/docker-fsl
 FROM brainlife/fsl:6.0.4
 
+RUN apt install -y dc bc
+
 LABEL org.nrg.commands="[{\"name\": \"fsl_deface\", \"command-line\": \"fsl_deface /input /output\", \"image\": \"spmic/fsl\", \"label\": \"fsl_deface\", \"version\": \"1.0\", \"schema-version\": \"1.0\", \"info-url\": \"\", \"type\": \"docker\", \"description\": \"Runs fsl_deface on a structural image\", \"inputs\": [], \"outputs\": [{\"mount\": \"defaced-out\", \"required\": \"true\", \"name\": \"defaced\", \"description\": \"Defaced output\"}], \"mounts\": [{\"writable\": \"false\", \"path\": \"/input\", \"name\": \"nifti-in\"}, {\"writable\": \"true\", \"path\": \"/output\", \"name\": \"defaced-out\"}], \"xnat\": [{\"derived-inputs\": [{\"name\": \"scan-niftis\", \"matcher\": \"@.label == 'NIFTI'\", \"provides-files-for-command-mount\": \"nifti-in\", \"derived-from-wrapper-input\": \"scan\", \"type\": \"Resource\", \"description\": \"The nifti resource on the scan\"}], \"contexts\": [\"xnat:imageScanData\"], \"description\": \"Run fsl_deface on a T1 weighted scan\", \"label\": \"fsl_deface\", \"output-handlers\": [{\"accepts-command-output\": \"defaced\", \"label\": \"DEFACED\", \"type\": \"Resource\", \"name\": \"defaced-resource\", \"as-a-child-of-wrapper-input\": \"scan\"}], \"external-inputs\": [{\"matcher\": \"'NIFTI' in @.resources[*].label\", \"required\": true, \"type\": \"Scan\", \"name\": \"scan\", \"description\": \"Input scan\"}], \"name\": \"fsl_deface-scan\"}]}]"
+
 
