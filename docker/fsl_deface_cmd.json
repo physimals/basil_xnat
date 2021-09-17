@@ -1,6 +1,6 @@
 {
     "name": "fsl_deface", 
-    "command-line": "fsl_deface /input /output",
+    "command-line": "deface_wrapper.sh /input /output",
     "image": "spmic/fsl", 
     "label": "fsl_deface",
     "version": "1.0", 
